@@ -169,6 +169,16 @@ module('Integration | main', function (hooks) {
     changeset.save();
   });
 
+  test('using changset.get on a relationship returns the related record(s) and not a proxy', async function (assert) {
+    let dogs = [this.store.createRecord('dog')];
+    let user = this.store.createRecord('user', { dogs });
+
+    let changeset = Changeset(user);
+    dogs = changeset.get('dogs').hasOwnProperty('recordData');
+
+    assert.equal(dogs, true, 'Get returns the related record(s) and not a proxy.');
+  })
+
   async function testBelongsToViaChangeset(assert, userType) {
     let profile = this.store.createRecord('profile');
     let user = this.store.createRecord(userType, { profile });
