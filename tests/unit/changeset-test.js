@@ -2469,4 +2469,19 @@ module('Unit | Utility | changeset', function (hooks) {
       'Get returns the related record(s) and not a proxy.'
     );
   });
+
+  test('using changset.get on a belongsTo relationship returns the related record and not a proxy', async function (assert) {
+    let store = this.owner.lookup('service:store');
+    let dog = store.createRecord('dog');
+    store.createRecord('user', { dogs: [dog] });
+
+    let changeset = ChangesetFactory(dog);
+
+    let belongsToUser = changeset.get('user');
+
+    assert.ok(
+      Object.prototype.hasOwnProperty.call(belongsToUser, '_internalModel'),
+      'Get returns the related record(s) and not a proxy.'
+    );
+  });
 });
